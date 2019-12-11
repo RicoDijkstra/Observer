@@ -1,52 +1,51 @@
 let alleLinks = document.querySelectorAll('nav a');
-let deSecties = document.querySelectorAll('section');
+let sectieLijst = document.querySelectorAll('section');
 
-const opties = {
-  // rootMargin: '-150px',
+const options = {
   treshold: 1.0
 };
 
-const verwerkDoorsnijding = (entries, observer) => {
+const checkIntersection = (entries, observer) => {
   entries.forEach( entry => {
-    console.log(entry.target.parentNode.id + " doorsnijdt " + entry.isIntersecting);
-    if ( entry.isIntersecting ){
-      let link = zoekBijpassendeLink('#' + entry.target.parentNode.id);
-      maakActief(link);
+    if(entry.isIntersecting) {
+      let link = zoekLink('#'+entry.target.parentNode.id);
+      maakActief(link,false);
     }
   });
-}
+};
 
-let observer = new IntersectionObserver(verwerkDoorsnijding, opties);
+let observer = new IntersectionObserver(checkIntersection, options);
 
-// observer.observe(deSecties[1]);
-deSecties.forEach( sectie => {
-  observer.observe(sectie.getElementByTagName('p')[0]);
-})
+sectieLijst.forEach(sectie => {
+  observer.observe(sectie.getElementsByTagName('p')[0]);
+});
 
-//functies die de class actief verwijder uit het menu
 const verwijderActief = () => {
   alleLinks.forEach( (link) => {
-    if( link.classList = 'actief'){
+    if(link.classList = 'actief') {
       link.classList.remove('actief');
     }
   });
-}
+};
 
-//functie die actief-class toevoegt
-const maakActief = (elem) => {
+const maakActief = (elem,isLink) => {
   verwijderActief();
-  elem.classList.add('actief');
-}
+  if(isLink) {
+    elem.classList.add('actief');
+  } else {
+    elem[0].classList.add('actief');
+  }
 
-alleLinks. forEach( (link) => {
+};
+
+alleLinks.forEach((link) => {
   link.addEventListener('click', (e) => {
-    e.preventDefault();
-    maakActief(e.target);
+    maakActief(e.target,true);
     window.location = e.target.href;
-  })
+  });
 });
 
-const zoekBijpassendeLink = (id) => {
-  let link = document.querySelector('nav a[href="' + id + '"]');
+const zoekLink = (id) => {
+  let link = document.querySelectorAll('nav a[href="'+id+'"]');
   return link;
-}
+};
